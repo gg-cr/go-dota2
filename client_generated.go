@@ -3,9 +3,9 @@ package dota2
 import (
 	"context"
 
-	"github.com/paralin/go-dota2/events"
-	"github.com/paralin/go-dota2/protocol"
-	"github.com/paralin/go-steam/steamid"
+	"github.com/gg-cr/go-dota2/events"
+	"github.com/gg-cr/go-dota2/protocol"
+	"github.com/gg-cr/go-steam/steamid"
 )
 
 // AbandonLobby abandons a lobby.

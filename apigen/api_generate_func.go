@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/fatih/camelcase"
-	gcm "github.com/paralin/go-dota2/protocol"
+	gcm "github.com/gg-cr/go-dota2/protocol"
 	"github.com/pkg/errors"
 )
 

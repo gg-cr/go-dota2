@@ -122,12 +122,12 @@ func findRepoRoot(dir string) (string, error) {
 	for {
 		modPath := filepath.Join(dir, "go.mod")
 		data, err := os.ReadFile(modPath)
-		if err == nil && strings.Contains(string(data), "module github.com/paralin/go-dota2\n") {
+		if err == nil && strings.Contains(string(data), "module github.com/gg-cr/go-dota2\n") {
 			return dir, nil
 		}
 		parent := filepath.Dir(dir)
 		if parent == dir {
-			return "", fmt.Errorf("could not find repo root (go.mod with github.com/paralin/go-dota2)")
+			return "", fmt.Errorf("could not find repo root (go.mod with github.com/gg-cr/go-dota2)")
 		}
 		dir = parent
 	}
