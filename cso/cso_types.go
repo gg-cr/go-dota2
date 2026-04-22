@@ -53,6 +53,13 @@ const (
 	GameAccountPlus = 2012
 )
 
+// ErrUnknownType is returned by NewSharedObject when the GC pushes a CSO
+// type id that isn't registered in csoTypeCtors. It's expected (Valve adds
+// new CSO types faster than upstream go-dota2 catches up — e.g. 2013 on a
+// modern welcome cache), so callers can errors.Is against this sentinel to
+// downgrade the log level without swallowing genuine parse errors.
+var ErrUnknownType = errors.New("unknown shared object type id")
+
 // csoTypeCtors links type IDs to constructors.
 var csoTypeCtors = map[CSOType]func() proto.Message{
 	EconItem: func() proto.Message {
@@ -94,7 +101,7 @@ var csoTypeCtors = map[CSOType]func() proto.Message{
 func NewSharedObject(typ CSOType) (proto.Message, error) {
 	ctor, ok := csoTypeCtors[typ]
 	if !ok {
-		return nil, errors.Errorf("unknown shared object type id: %d", typ)
+		return nil, errors.Wrapf(ErrUnknownType, "%d", typ)
 	}
 
 	return ctor(), nil

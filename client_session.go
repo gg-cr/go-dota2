@@ -2,7 +2,9 @@ package dota2
 
 import (
 	"context"
+	"errors"
 
+	"github.com/gg-cr/go-dota2/cso"
 	devents "github.com/gg-cr/go-dota2/events"
 	gcsdkm "github.com/gg-cr/go-dota2/protocol"
 	gcsm "github.com/gg-cr/go-dota2/protocol"
@@ -69,7 +71,15 @@ func (d *Dota2) handleClientWelcome(packet *gamecoordinator.GCPacket) error {
 
 	for _, cache := range welcome.GetOutofdateSubscribedCaches() {
 		if err := d.cache.HandleSubscribed(cache); err != nil {
-			d.le.WithError(err).Warn("unable to handle welcome cache")
+			// Valve regularly adds new CSO types that upstream go-dota2
+			// hasn't registered yet. Those are harmless — log at debug.
+			// Anything else (a real decode failure for a type we DO know)
+			// still warrants a warning.
+			if errors.Is(err, cso.ErrUnknownType) {
+				d.le.WithError(err).Debug("skipping unknown welcome cache type")
+			} else {
+				d.le.WithError(err).Warn("unable to handle welcome cache")
+			}
 		}
 	}
 
